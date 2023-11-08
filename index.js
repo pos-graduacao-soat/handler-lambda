@@ -17,7 +17,7 @@ exports.handler = async (event) => {
       }
     }
     else { 
-      token = await generateToken(event.documentNumber, event.name, event.documentNumber);
+      token = await generateToken(event.documentNumber, event.name, event.email);
     }
   }
 

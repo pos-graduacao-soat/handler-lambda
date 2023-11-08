@@ -1,12 +1,13 @@
 const jwt = require('jsonwebtoken');
+const axios = require('axios');
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   let token = null
   if (!event.body) { token = await generateToken(null, null, null) }
   else {
     const body = JSON.parse(event.body)
-    const isCostumerRegistered = await costumerIsRegistered(body.documentNumber, body.name, body.email)
-    if (!isCostumerRegistered) {
+    const iscustomerRegistered = await customerIsRegistered(body.documentNumber, body.name, body.email)
+    if (!iscustomerRegistered) {
       return {
         statusCode: 401,
         body: JSON.stringify('Parâmetros inválidos ou incorretos'),
@@ -42,18 +43,18 @@ async function generateToken(documentNumber, name, email) {
   return jwt.sign({ principalIdCustomer }, secret, { expiresIn: 3600 })
 }
 
-async function costumerIsRegistered(documentNumber, name, email) {
-  let costumerRegistered = false
+async function customerIsRegistered(documentNumber, name, email) {
+  let customerRegistered = true
 
-  costumerRegistered = await fetch(`${process.env.urlApi}/customers`, {
-    method: "GET",
-    query: {
+  axios.get(`${process.env.urlApi}/customers`, {
+    params: {
       "documentNumber": documentNumber,
       "name": name,
       "email": email
     }
+  }).catch(function () {
+    customerRegistered = false
   })
 
-  if(costumerRegistered.status === 200) return true
-  else return false
+  return customerRegistered
 }

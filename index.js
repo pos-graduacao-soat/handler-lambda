@@ -3,25 +3,27 @@ const axios = require('axios');
 
 exports.handler = async (event) => {
   let token = null
-  if (!event.body) { token = await generateToken(null, null, null) }
+
+  if (Object.keys(event).length === 0) { 
+    token = await generateToken(null, null, null) 
+  }
   else {
-    const body = JSON.parse(event.body)
-    const iscustomerRegistered = await customerIsRegistered(body.documentNumber, body.name, body.email)
+    const iscustomerRegistered = await customerIsRegistered(event.documentNumber, event.name, event.email)
     if (!iscustomerRegistered) {
       return {
         statusCode: 401,
-        body: JSON.stringify('Parâmetros inválidos ou incorretos'),
+        body: { message: 'Invalid or incorrect parameters' },
         headers: { 'Content-Type': 'application/json' }
       }
     }
     else { 
-      token = await generateToken(body.documentNumber, body.name, body.documentNumber);
+      token = await generateToken(event.documentNumber, event.name, event.documentNumber);
     }
   }
 
   return {
     statusCode: 200,
-    body: JSON.stringify({ token: token }),
+    body: { token: token },
     headers: { 'Content-Type': 'application/json' }
   }
 }

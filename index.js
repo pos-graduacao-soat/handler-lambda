@@ -46,15 +46,18 @@ async function generateToken(documentNumber, name, email) {
 async function customerIsRegistered(documentNumber, name, email) {
   let customerRegistered = true
 
-  axios.get(`${process.env.urlApi}/customers`, {
-    params: {
-      "documentNumber": documentNumber,
-      "name": name,
-      "email": email
-    }
-  }).catch(function () {
+  try {
+    await axios.get(`${process.env.urlApi}/customers`, {
+      params: {
+        "documentNumber": documentNumber,
+        "name": name,
+        "email": email
+      }
+    })
+  }
+  catch(e){
     customerRegistered = false
-  })
+  }
 
   return customerRegistered
 }

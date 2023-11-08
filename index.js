@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
 
-export const handler = async (event) => {
+exports.handler = async (event) => {
   let token = null
   if (!event.body) { token = await generateToken(null, null, null) }
   else {

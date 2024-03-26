@@ -61,5 +61,6 @@ async function customerIsRegistered(documentNumber, name, email) {
     customerRegistered = false
   }
 
+  
   return customerRegistered
 }
